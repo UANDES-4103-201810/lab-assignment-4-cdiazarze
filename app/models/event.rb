@@ -1,9 +1,11 @@
 class Event < ApplicationRecord
   belongs_to :place
   has_many :tickets
-  validates :start_date, if: :validate_date?
+  validate :start_date_cannot_be_in_the_past,
 
-  def validate_date?
-    :start_date>:created_at
+  def start_date_cannot_be_in_the_past
+    if start_date.present? && start_date < Date.today
+      errors.add(:start_date, "can't be in the past")
+    end
   end
 end
